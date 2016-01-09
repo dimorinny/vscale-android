@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Vscale</string>
+
+    <string name="title_servers">Сервера</string>
+</resources>
