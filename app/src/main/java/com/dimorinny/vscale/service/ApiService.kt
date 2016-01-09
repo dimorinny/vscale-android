@@ -9,6 +9,8 @@ import com.dimorinny.vscale.event.server.LoadServersResponse
 import com.dimorinny.vscale.usecase.LoadServersUseCase
 import com.squareup.otto.Bus
 import rx.Subscriber
+import rx.Subscription
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -21,6 +23,8 @@ class ApiService : Service() {
 
     @Inject
     lateinit var bus : Bus
+
+    private var subscriptions : List<Subscription> = ArrayList()
 
     companion object {
         const val ARG_SERVICE_COMMAND = "arg_service_command"
@@ -36,11 +40,19 @@ class ApiService : Service() {
         App.graph.inject(this)
     }
 
+    override fun onDestroy() {
+        for (subscription in subscriptions) {
+            subscription.unsubscribe()
+        }
+        super.onDestroy()
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val command = intent?.getStringExtra(ARG_SERVICE_COMMAND)
 
         if (command == LOAD_SERVERS_COMMAND) {
-            serversUseCase.loadServers().subscribe(ServersSubscriber(startId))
+            subscriptions +=
+                    serversUseCase.loadServers().subscribe(ServersSubscriber(startId))
         }
 
         return super.onStartCommand(intent, flags, startId)

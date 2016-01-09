@@ -13,8 +13,7 @@ import rx.Observable
 class DataManager(private val storIO: StorIOSQLite) {
 
     fun getServersObservable() : Observable<List<ServerEntity>> {
-        return storIO
-                .get()
+        return storIO.get()
                 .listOfObjects(ServerEntity::class.java)
                 .withQuery(Query.builder()
                         .table(ServerTable.TABLE)
