@@ -1,6 +1,7 @@
 package com.dimorinny.vscale.ui.servers
 
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -54,7 +55,9 @@ public class ServersFragment : RxFragment() {
 
         initRecyclerView();
         loadDataFromCache();
-        serviceManager.loadServers()
+        Handler().postDelayed({
+            serviceManager.loadServers()
+        }, 1000)
     }
 
     private fun initRecyclerView() {
@@ -65,6 +68,7 @@ public class ServersFragment : RxFragment() {
 
     private fun loadDataFromCache() {
         dataManager.getServersObservable()
+                .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(bindToLifecycle<List<ServerEntity>>())
                 .subscribe(object : Subscriber<List<ServerEntity>>() {
@@ -82,7 +86,12 @@ public class ServersFragment : RxFragment() {
 
     @Subscribe
     fun answerAvailable(response: LoadServersResponse) {
-        // TODO: fix
+        loadDataFromCache()
         Log.v("servers load", "ok")
+    }
+
+    override fun onDestroy() {
+        bus.unregister(this)
+        super.onDestroy()
     }
 }
