@@ -1,5 +1,6 @@
 package com.dimorinny.vscale.ui.servers
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -8,13 +9,14 @@ import android.widget.TextView
 import com.dimorinny.vscale.R
 import com.dimorinny.vscale.db.entity.ServerEntity
 import com.dimorinny.vscale.dependency.bindView
+import com.dimorinny.vscale.util.ImageUtils
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 
 /**
  * Created by Dimorinny on 31.12.15.
  */
-public class ServersAdapter : RecyclerView.Adapter<ServersAdapter.ViewHolder>() {
+public class ServersAdapter(val context: Context) : RecyclerView.Adapter<ServersAdapter.ViewHolder>() {
 
     var servers : List<ServerEntity> = ArrayList()
         set(s : List<ServerEntity>) {
@@ -25,14 +27,18 @@ public class ServersAdapter : RecyclerView.Adapter<ServersAdapter.ViewHolder>() 
     public class ViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
         val serverName : TextView by bindView(R.id.item_server_name)
         val hostName : TextView by bindView(R.id.item_server_hostname)
+        val location : TextView by bindView(R.id.item_server_location)
         val image : CircleImageView by bindView(R.id.item_server_image)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val server = servers[position]
+        val image = ImageUtils.imageByMadeFrom(server.madeFrom)
 
+        holder.image.setImageDrawable(context.getDrawable(image))
         holder.hostName.text = server.hostName
         holder.serverName.text = server.name
+        holder.location.text = server.locations
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {

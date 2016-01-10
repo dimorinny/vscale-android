@@ -8,6 +8,7 @@ public class ServerTable private constructor() {
         const val TABLE = "Servers"
         const val COLUMN_ID = "_id"
         const val COLUMN_HOSTNAME = "hostname"
+        const val COLUMN_LOCATIONS = "locations"
         const val COLUMN_LOCKED = "locked"
         const val COLUMN_RPLAN = "rplan"
         const val COLUMN_NAME = "name"
@@ -20,6 +21,7 @@ public class ServerTable private constructor() {
             return "CREATE TABLE $TABLE (" +
                     "$COLUMN_ID INTEGER NOT NULL PRIMARY KEY," +
                     "$COLUMN_HOSTNAME TEXT NOT NULL," +
+                    "$COLUMN_LOCATIONS TEXT NOT NULL," +
                     "$COLUMN_LOCKED INTEGER NOT NULL," +
                     "$COLUMN_RPLAN TEXT NOT NULL," +
                     "$COLUMN_NAME TEXT NOT NULL," +

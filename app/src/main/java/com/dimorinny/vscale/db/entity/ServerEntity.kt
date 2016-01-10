@@ -16,6 +16,11 @@ data class ServerEntity (
     @JvmField
     var hostName: String? = null,
 
+    @SerializedName("locations")
+    @StorIOSQLiteColumn(name = ServerTable.Companion.COLUMN_LOCATIONS)
+    @JvmField
+    var locations: String? = null,
+
     @SerializedName("locked")
     @StorIOSQLiteColumn(name = ServerTable.Companion.COLUMN_LOCKED)
     @JvmField

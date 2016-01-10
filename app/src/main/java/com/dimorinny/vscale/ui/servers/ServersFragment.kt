@@ -37,7 +37,7 @@ public class ServersFragment : RxFragment() {
     lateinit var bus : Bus
 
     val serversRecyclerView : RecyclerView by bindView(R.id.servers_list)
-    val serversAdapter : ServersAdapter = ServersAdapter()
+    lateinit var serversAdapter : ServersAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +58,7 @@ public class ServersFragment : RxFragment() {
     }
 
     private fun initRecyclerView() {
+        serversAdapter = ServersAdapter(activity)
         serversRecyclerView.layoutManager = LinearLayoutManager(activity)
         serversRecyclerView.adapter = serversAdapter
     }
