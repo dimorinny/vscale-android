@@ -104,21 +104,46 @@
             android:layout_marginBottom="8dp"
             >
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_location_gray_24dp"
-            />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_earth_gray_24dp"
+                />
 
-        <TextView
-            android:id="@+id/item_server_ip"
-            android:text="192.168.2.3"
+            <TextView
+                android:id="@+id/item_server_ip"
+                android:text="192.168.2.3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_server_status_container"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp"
-            />
+            android:layout_marginBottom="8dp"
+            >
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_info_gray_24dp"
+                />
+
+            <TextView
+                android:id="@+id/item_server_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                />
 
         </LinearLayout>
 

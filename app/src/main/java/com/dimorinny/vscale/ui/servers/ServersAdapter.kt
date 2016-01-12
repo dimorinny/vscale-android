@@ -10,6 +10,7 @@ import com.dimorinny.vscale.R
 import com.dimorinny.vscale.db.entity.ServerEntity
 import com.dimorinny.vscale.dependency.bindView
 import com.dimorinny.vscale.util.ImageUtils
+import com.dimorinny.vscale.util.StatusUtils
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 
@@ -28,6 +29,7 @@ public class ServersAdapter(val context: Context) : RecyclerView.Adapter<Servers
         val serverName : TextView by bindView(R.id.item_server_name)
         val hostName : TextView by bindView(R.id.item_server_hostname)
         val location : TextView by bindView(R.id.item_server_location)
+        val status : TextView by bindView(R.id.item_server_status)
         val image : CircleImageView by bindView(R.id.item_server_image)
     }
 
@@ -39,6 +41,7 @@ public class ServersAdapter(val context: Context) : RecyclerView.Adapter<Servers
         holder.hostName.text = server.hostName
         holder.serverName.text = server.name
         holder.location.text = server.locations
+        holder.status.text = context.getString(StatusUtils.getStatus(server.status))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
