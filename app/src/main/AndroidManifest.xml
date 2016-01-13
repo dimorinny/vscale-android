@@ -19,6 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.server.ServerActivity"
+            android:label="@string/title_server"/>
         <service
             android:name=".service.ApiService"
             android:enabled="true"

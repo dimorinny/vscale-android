@@ -22,6 +22,18 @@ class DataManager(private val storIO: StorIOSQLite) {
                 .createObservable()
     }
 
+    fun getServerObservable(id: Int) : Observable<ServerEntity> {
+        return storIO.get()
+                .`object`(ServerEntity::class.java)
+                .withQuery(Query.builder()
+                        .table(ServerTable.TABLE)
+                        .where("${ServerTable.COLUMN_CTID} = ?")
+                        .whereArgs(id)
+                        .build())
+                .prepare()
+                .createObservable()
+    }
+
     fun clearServers() {
         storIO.delete()
                 .byQuery(DeleteQuery.builder().table(ServerTable.TABLE).build())
@@ -32,6 +44,13 @@ class DataManager(private val storIO: StorIOSQLite) {
     fun putServers(servers: List<ServerEntity>) {
         storIO.put()
                 .objects(servers)
+                .prepare()
+                .executeAsBlocking()
+    }
+
+    fun putServer(server: ServerEntity) {
+        storIO.put()
+                .`object`(server)
                 .prepare()
                 .executeAsBlocking()
     }

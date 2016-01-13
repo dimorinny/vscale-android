@@ -52,12 +52,8 @@ data class ServerEntity (
     var madeFrom: String? = null,
 
     @SerializedName("ctid")
-    @StorIOSQLiteColumn(name = ServerTable.Companion.COLUMN_CTID)
+    @StorIOSQLiteColumn(name = ServerTable.Companion.COLUMN_CTID, key = true)
     @JvmField
     var ctId: Int? = null
-) {
-    @StorIOSQLiteColumn(name = ServerTable.Companion.COLUMN_ID, key = true)
-    @JvmField
-    var id: Int? = null
-}
+)
 

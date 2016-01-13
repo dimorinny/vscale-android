@@ -6,7 +6,6 @@ package com.dimorinny.vscale.db.tables
 public class ServerTable private constructor() {
     public companion object {
         const val TABLE = "Servers"
-        const val COLUMN_ID = "_id"
         const val COLUMN_HOSTNAME = "hostname"
         const val COLUMN_LOCATIONS = "locations"
         const val COLUMN_LOCKED = "locked"
@@ -19,7 +18,7 @@ public class ServerTable private constructor() {
 
         fun getCreateTableQuery() : String {
             return "CREATE TABLE $TABLE (" +
-                    "$COLUMN_ID INTEGER NOT NULL PRIMARY KEY," +
+                    "$COLUMN_CTID INTEGER NOT NULL PRIMARY KEY," +
                     "$COLUMN_HOSTNAME TEXT NOT NULL," +
                     "$COLUMN_LOCATIONS TEXT NOT NULL," +
                     "$COLUMN_LOCKED INTEGER NOT NULL," +
@@ -27,8 +26,7 @@ public class ServerTable private constructor() {
                     "$COLUMN_NAME TEXT NOT NULL," +
                     "$COLUMN_ACTIVE INTEGER NOT NULL," +
                     "$COLUMN_STATUS TEXT NOT NULL," +
-                    "$COLUMN_MADE_FROM TEXT NOT NULL," +
-                    "$COLUMN_CTID INTEGER NOT NULL" +
+                    "$COLUMN_MADE_FROM TEXT NOT NULL" +
                     ");";
         }
     }

@@ -6,6 +6,7 @@
 
     <!-- Titles -->
     <string name="title_servers">Сервера</string>
+    <string name="title_server">Сервер</string>
 
     <!-- Drawer -->
     <string name="drawer_settings">Настройки</string>

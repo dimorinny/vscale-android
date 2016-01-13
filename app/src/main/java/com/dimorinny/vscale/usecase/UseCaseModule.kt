@@ -18,4 +18,10 @@ class UseCaseModule {
     fun provideLoadServersUseCase(dataManager: DataManager, api: ApiVscale) : LoadServersUseCase {
         return LoadServersUseCase(dataManager, api)
     }
+
+    @Provides
+    @Singleton
+    fun provideLoadServerUseCase(dataManager: DataManager, api: ApiVscale) : LoadServerUseCase {
+        return LoadServerUseCase(dataManager, api)
+    }
 }

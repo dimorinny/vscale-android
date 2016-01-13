@@ -1,7 +1,7 @@
 package com.dimorinny.vscale.ui.servers
 
+import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -15,6 +15,7 @@ import com.dimorinny.vscale.db.entity.ServerEntity
 import com.dimorinny.vscale.dependency.bindView
 import com.dimorinny.vscale.event.server.LoadServersResponse
 import com.dimorinny.vscale.service.ServiceManager
+import com.dimorinny.vscale.ui.server.ServerActivity
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import com.trello.rxlifecycle.components.support.RxFragment
@@ -55,13 +56,18 @@ public class ServersFragment : RxFragment() {
 
         initRecyclerView();
         loadDataFromCache();
-        Handler().postDelayed({
-            serviceManager.loadServers()
-        }, 1000)
+        serviceManager.loadServers()
     }
 
     private fun initRecyclerView() {
         serversAdapter = ServersAdapter(activity)
+        serversAdapter.itemClickListener = object : ServersAdapter.OnItemClickListener {
+            override fun onItemClicked(index: Int, view: View) {
+                val intent = Intent(activity, ServerActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
         serversRecyclerView.layoutManager = LinearLayoutManager(activity)
         serversRecyclerView.adapter = serversAdapter
     }

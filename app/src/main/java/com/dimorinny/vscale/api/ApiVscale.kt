@@ -14,7 +14,7 @@ import rx.Observable
 class ApiVscale(private val context: Context) {
 
     companion object {
-        private val BASE_URL = "http://database-administrator-amadeus-62404.bitballoon.com"
+        private val BASE_URL = "http://192.168.1.9:8000"
     }
 
     private val restAdapter: RestAdapter = initRestAdapter()
@@ -33,5 +33,9 @@ class ApiVscale(private val context: Context) {
 
     fun getServers(): Observable<List<ServerEntity>> {
         return restInterface.getServers()
+    }
+
+    fun getServer(): Observable<ServerEntity> {
+        return restInterface.getServer()
     }
 }

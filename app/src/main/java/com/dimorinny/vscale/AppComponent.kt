@@ -4,6 +4,7 @@ import com.dimorinny.vscale.api.ApiModule
 import com.dimorinny.vscale.db.DbModule
 import com.dimorinny.vscale.service.ApiService
 import com.dimorinny.vscale.service.ServiceModule
+import com.dimorinny.vscale.ui.server.ServerFragment
 import com.dimorinny.vscale.ui.servers.ServersFragment
 import com.dimorinny.vscale.usecase.UseCaseModule
 import dagger.Component
@@ -23,5 +24,6 @@ import javax.inject.Singleton
 interface AppComponent {
     fun inject(application: App)
     fun inject(fragment: ServersFragment)
+    fun inject(fragment: ServerFragment)
     fun inject(service: ApiService)
 }

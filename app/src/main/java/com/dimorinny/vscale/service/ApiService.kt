@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.IBinder
 import com.dimorinny.vscale.App
 import com.dimorinny.vscale.db.entity.ServerEntity
+import com.dimorinny.vscale.event.server.LoadServerResponse
 import com.dimorinny.vscale.event.server.LoadServersResponse
+import com.dimorinny.vscale.usecase.LoadServerUseCase
 import com.dimorinny.vscale.usecase.LoadServersUseCase
 import com.squareup.otto.Bus
 import rx.Subscriber
@@ -22,13 +24,21 @@ class ApiService : Service() {
     lateinit var serversUseCase : LoadServersUseCase
 
     @Inject
+    lateinit var serverUseCase : LoadServerUseCase
+
+    @Inject
     lateinit var bus : Bus
 
     private var subscriptions : List<Subscription> = ArrayList()
 
     companion object {
+        // Args
         const val ARG_SERVICE_COMMAND = "arg_service_command"
+        const val ARG_SERVER_ID = "arg_server_id"
+
+        // Commands
         const val LOAD_SERVERS_COMMAND = "load_servers_command"
+        const val LOAD_SERVER_COMMAND = "load_server_command"
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -47,12 +57,20 @@ class ApiService : Service() {
         super.onDestroy()
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val command = intent?.getStringExtra(ARG_SERVICE_COMMAND)
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        val command = intent.getStringExtra(ARG_SERVICE_COMMAND)
 
-        if (command == LOAD_SERVERS_COMMAND) {
-            subscriptions +=
-                    serversUseCase.loadServers().subscribe(ServersSubscriber(startId))
+        when (command) {
+            LOAD_SERVERS_COMMAND -> {
+                subscriptions +=
+                        serversUseCase.loadServers().subscribe(ServersSubscriber(startId))
+            }
+
+            LOAD_SERVER_COMMAND -> {
+                val id = intent.getIntExtra(ARG_SERVER_ID, 0)
+                subscriptions +=
+                        serverUseCase.loadServer(id).subscribe(ServerSubscriber(startId))
+            }
         }
 
         return super.onStartCommand(intent, flags, startId)
@@ -69,6 +87,19 @@ class ApiService : Service() {
 
         override fun onNext(t: List<ServerEntity>) {
             bus.post(LoadServersResponse(true, null))
+            stopSelf(startId)
+        }
+    }
+
+    inner class ServerSubscriber(val startId: Int) : Subscriber<ServerEntity>() {
+        override fun onCompleted() {}
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(t: ServerEntity) {
+            bus.post(LoadServerResponse(true, null))
             stopSelf(startId)
         }
     }
