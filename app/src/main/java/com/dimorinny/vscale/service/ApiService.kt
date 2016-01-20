@@ -57,7 +57,11 @@ class ApiService : Service() {
         super.onDestroy()
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent == null) {
+            return START_NOT_STICKY
+        }
+
         val command = intent.getStringExtra(ARG_SERVICE_COMMAND)
 
         when (command) {
@@ -73,7 +77,7 @@ class ApiService : Service() {
             }
         }
 
-        return super.onStartCommand(intent, flags, startId)
+        return START_NOT_STICKY
     }
 
     // Subscribers
@@ -83,6 +87,7 @@ class ApiService : Service() {
 
         override fun onError(e: Throwable) {
             e.printStackTrace()
+            stopSelf(startId)
         }
 
         override fun onNext(t: List<ServerEntity>) {
@@ -96,6 +101,7 @@ class ApiService : Service() {
 
         override fun onError(e: Throwable) {
             e.printStackTrace()
+            stopSelf(startId)
         }
 
         override fun onNext(t: ServerEntity) {

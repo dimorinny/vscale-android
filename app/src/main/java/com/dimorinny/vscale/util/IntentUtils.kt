@@ -24,7 +24,7 @@ object IntentUtils {
             fragmentArguments.putParcelable("_uri", intent.data)
         }
 
-        if (intent.data != null) {
+        if (intent.extras != null) {
             fragmentArguments.putAll(intent.extras)
         }
 

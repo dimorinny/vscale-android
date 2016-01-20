@@ -16,7 +16,6 @@ import com.dimorinny.vscale.ui.servers.ServersFragment
  * Created by Dimorinny on 12.01.16.
  */
 class NavigationActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
-
     val drawerLayout: DrawerLayout by bindView(R.id.drawer)
     val navigationView: NavigationView by bindView(R.id.navigation)
     val toolbar: Toolbar by bindView(R.id.toolbar)
@@ -27,7 +26,10 @@ class NavigationActivity : BaseActivity(), NavigationView.OnNavigationItemSelect
 
         initToolbar()
         initViews()
-        setDefaultContent()
+
+        if (savedInstanceState == null) {
+            setDefaultContent()
+        }
     }
 
     private fun initToolbar() {

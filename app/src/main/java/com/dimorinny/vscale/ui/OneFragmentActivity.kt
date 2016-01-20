@@ -2,7 +2,9 @@ package com.dimorinny.vscale.ui
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.Toolbar
 import com.dimorinny.vscale.R
+import com.dimorinny.vscale.dependency.bindView
 import com.dimorinny.vscale.util.IntentUtils
 
 /**
@@ -12,16 +14,19 @@ import com.dimorinny.vscale.util.IntentUtils
 abstract class OneFragmentActivity : BaseActivity() {
 
     protected var fragment: Fragment? = null
-        private set
 
     protected abstract fun createFragment(): Fragment
 
     protected val layout: Int
         get() = R.layout.activity_one_fragment
 
+    protected val toolbar: Toolbar by bindView(R.id.toolbar)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layout)
+
+        initToolbar()
 
         if (!isFinishing) {
             val fragmentManager = supportFragmentManager
@@ -40,6 +45,14 @@ abstract class OneFragmentActivity : BaseActivity() {
 
             // Save fragment
             this.fragment = fragment
+        }
+    }
+
+    private fun initToolbar() {
+        setSupportActionBar(toolbar)
+
+        if (supportActionBar != null) {
+            supportActionBar.setDisplayHomeAsUpEnabled(true)
         }
     }
 }

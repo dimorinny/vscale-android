@@ -16,6 +16,7 @@ import com.dimorinny.vscale.dependency.bindView
 import com.dimorinny.vscale.event.server.LoadServersResponse
 import com.dimorinny.vscale.service.ServiceManager
 import com.dimorinny.vscale.ui.server.ServerActivity
+import com.dimorinny.vscale.ui.server.ServerFragment
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import com.trello.rxlifecycle.components.support.RxFragment
@@ -54,6 +55,7 @@ public class ServersFragment : RxFragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.v("ServersFragment", "view created")
         initRecyclerView();
         loadDataFromCache();
         serviceManager.loadServers()
@@ -63,8 +65,10 @@ public class ServersFragment : RxFragment() {
         serversAdapter = ServersAdapter(activity)
         serversAdapter.itemClickListener = object : ServersAdapter.OnItemClickListener {
             override fun onItemClicked(index: Int, view: View) {
-                val intent = Intent(activity, ServerActivity::class.java)
-                startActivity(intent)
+                val id = serversAdapter.servers[index].ctId
+                if (id != null) {
+                    startDetailActivity(id)
+                }
             }
         }
 
@@ -93,7 +97,12 @@ public class ServersFragment : RxFragment() {
     @Subscribe
     fun answerAvailable(response: LoadServersResponse) {
         loadDataFromCache()
-        Log.v("servers load", "ok")
+    }
+
+    private fun startDetailActivity(index: Int) {
+        val intent = Intent(activity, ServerActivity::class.java)
+        intent.putExtra(ServerFragment.ARG_SERVER_ID, index)
+        startActivity(intent)
     }
 
     override fun onDestroy() {

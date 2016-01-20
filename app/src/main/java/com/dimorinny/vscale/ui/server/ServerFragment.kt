@@ -1,19 +1,23 @@
 package com.dimorinny.vscale.ui.server
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.dimorinny.vscale.App
 import com.dimorinny.vscale.R
 import com.dimorinny.vscale.db.DataManager
 import com.dimorinny.vscale.db.entity.ServerEntity
+import com.dimorinny.vscale.dependency.bindView
 import com.dimorinny.vscale.event.server.LoadServerResponse
 import com.dimorinny.vscale.service.ServiceManager
+import com.dimorinny.vscale.util.ImageUtils
+import com.dimorinny.vscale.util.StatusUtils
 import com.squareup.otto.Bus
 import com.squareup.otto.Subscribe
 import com.trello.rxlifecycle.components.support.RxFragment
+import de.hdodenhof.circleimageview.CircleImageView
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -23,6 +27,10 @@ import javax.inject.Inject
  */
 class ServerFragment : RxFragment() {
 
+    companion object {
+        val ARG_SERVER_ID = "arg_server_id"
+    }
+
     @Inject
     lateinit var serviceManager: ServiceManager
 
@@ -31,6 +39,12 @@ class ServerFragment : RxFragment() {
 
     @Inject
     lateinit var bus : Bus
+
+    val serverName : TextView by bindView(R.id.server_name)
+    val hostName : TextView by bindView(R.id.server_hostname)
+    val location : TextView by bindView(R.id.server_location)
+    val status : TextView by bindView(R.id.server_status)
+    val image : CircleImageView by bindView(R.id.server_image)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,9 +63,18 @@ class ServerFragment : RxFragment() {
         serviceManager.loadServer(123)
     }
 
+    private fun setData(server: ServerEntity) {
+        val drawable = ImageUtils.imageByMadeFrom(server.madeFrom)
+
+        image.setImageDrawable(context.getDrawable(drawable))
+        hostName.text = server.hostName
+        serverName.text = server.name
+        location.text = server.locations
+        status.text = context.getString(StatusUtils.getStatus(server.status))
+    }
+
     private fun loadDataFromCache() {
-        // TODO: hardcode
-        dataManager.getServerObservable(10139)
+        dataManager.getServerObservable(arguments.getInt(ARG_SERVER_ID))
             .take(1)
             .observeOn(AndroidSchedulers.mainThread())
             .compose(bindToLifecycle<ServerEntity>())
@@ -61,6 +84,7 @@ class ServerFragment : RxFragment() {
                 override fun onCompleted() {}
 
                 override fun onNext(t: ServerEntity) {
+                    setData(t)
                 }
             })
     }
@@ -68,7 +92,6 @@ class ServerFragment : RxFragment() {
     @Subscribe
     fun answerAvailable(response: LoadServerResponse) {
         loadDataFromCache()
-        Log.v("servers load", "ok")
     }
 
     override fun onDestroy() {
