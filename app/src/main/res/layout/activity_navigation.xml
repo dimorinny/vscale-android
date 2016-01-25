@@ -13,7 +13,6 @@
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
         >
 
         <LinearLayout
@@ -41,6 +40,7 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/drawer_header"
+        app:itemBackground="@drawable/bg_drawer_item"
         app:menu="@menu/drawer"
         />
 

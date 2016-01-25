@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.dimorinny.vscale.R
 import com.dimorinny.vscale.db.entity.ServerEntity
 import com.dimorinny.vscale.dependency.bindView
+import com.dimorinny.vscale.util.DrawableUtils
 import com.dimorinny.vscale.util.ImageUtils
 import com.dimorinny.vscale.util.StatusUtils
 import de.hdodenhof.circleimageview.CircleImageView
@@ -52,7 +53,7 @@ public class ServersAdapter(val context: Context) : RecyclerView.Adapter<Servers
         val server = servers[position]
         val image = ImageUtils.imageByMadeFrom(server.madeFrom)
 
-        holder.image.setImageDrawable(context.getDrawable(image))
+        holder.image.setImageDrawable(DrawableUtils.getDrawable(context, image))
         holder.hostName.text = server.hostName
         holder.serverName.text = server.name
         holder.location.text = server.locations

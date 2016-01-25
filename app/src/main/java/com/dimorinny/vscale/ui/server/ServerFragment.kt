@@ -12,6 +12,7 @@ import com.dimorinny.vscale.db.entity.ServerEntity
 import com.dimorinny.vscale.dependency.bindView
 import com.dimorinny.vscale.event.server.LoadServerResponse
 import com.dimorinny.vscale.service.ServiceManager
+import com.dimorinny.vscale.util.DrawableUtils
 import com.dimorinny.vscale.util.ImageUtils
 import com.dimorinny.vscale.util.StatusUtils
 import com.squareup.otto.Bus
@@ -66,7 +67,7 @@ class ServerFragment : RxFragment() {
     private fun setData(server: ServerEntity) {
         val drawable = ImageUtils.imageByMadeFrom(server.madeFrom)
 
-        image.setImageDrawable(context.getDrawable(drawable))
+        image.setImageDrawable(DrawableUtils.getDrawable(context, drawable))
         hostName.text = server.hostName
         serverName.text = server.name
         location.text = server.locations
