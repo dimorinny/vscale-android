@@ -63,9 +63,6 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.0.2'
     provided 'org.glassfish:javax.annotation:10.0-b28'
 
-    //bus
-    compile 'com.squareup:otto:1.3.8'
-
     //views
     compile 'de.hdodenhof:circleimageview:2.0.0'
 }

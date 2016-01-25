@@ -27,7 +27,7 @@ public class ServerTable private constructor() {
                     "$COLUMN_ACTIVE INTEGER NOT NULL," +
                     "$COLUMN_STATUS TEXT NOT NULL," +
                     "$COLUMN_MADE_FROM TEXT NOT NULL" +
-                    ");";
+                    ");"
         }
     }
 }

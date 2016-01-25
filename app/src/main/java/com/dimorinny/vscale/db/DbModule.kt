@@ -20,9 +20,9 @@ import javax.inject.Singleton
 @Module
 class DbModule {
 
-    @Provides
     @Singleton
-    fun provideStoreIOSQLite(sqLiteOpenHelper: SQLiteOpenHelper) : StorIOSQLite {
+    @Provides
+    fun provideStoreIOSQLite(sqLiteOpenHelper: SQLiteOpenHelper): StorIOSQLite {
         return DefaultStorIOSQLite.builder()
                 .sqliteOpenHelper(sqLiteOpenHelper)
                 .addTypeMapping(ServerEntity::class.java, SQLiteTypeMapping.builder<ServerEntity>()
@@ -33,15 +33,15 @@ class DbModule {
                 .build();
     }
 
-    @Provides
     @Singleton
-    fun provideSQLiteOpenHelper(context : Context) : SQLiteOpenHelper {
+    @Provides
+    fun provideSQLiteOpenHelper(context: Context): SQLiteOpenHelper {
         return DbOpenHelper(context)
     }
 
-    @Provides
     @Singleton
-    fun provideDbManager(storIO: StorIOSQLite) : DataManager {
+    @Provides
+    fun provideDbManager(storIO: StorIOSQLite): DataManager {
         return DataManager(storIO)
     }
 }

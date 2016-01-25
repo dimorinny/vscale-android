@@ -12,7 +12,7 @@ import rx.schedulers.Schedulers
  */
 class LoadServersUseCase(val dataManager: DataManager, val api: ApiVscale) {
 
-    fun loadServers() : Observable<List<ServerEntity>> {
+    fun loadServers(): Observable<List<ServerEntity>> {
         return api.getServers()
                 .doOnNext {
                     dataManager.clearServers()

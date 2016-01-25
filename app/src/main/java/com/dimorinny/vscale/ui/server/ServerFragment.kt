@@ -11,14 +11,14 @@ import com.dimorinny.vscale.db.DataManager
 import com.dimorinny.vscale.db.entity.ServerEntity
 import com.dimorinny.vscale.dependency.bindView
 import com.dimorinny.vscale.event.server.LoadServerResponse
+import com.dimorinny.vscale.rx.RxBus
 import com.dimorinny.vscale.service.ServiceManager
 import com.dimorinny.vscale.util.DrawableUtils
 import com.dimorinny.vscale.util.ImageUtils
 import com.dimorinny.vscale.util.StatusUtils
-import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import com.trello.rxlifecycle.components.support.RxFragment
 import de.hdodenhof.circleimageview.CircleImageView
+import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -36,21 +36,20 @@ class ServerFragment : RxFragment() {
     lateinit var serviceManager: ServiceManager
 
     @Inject
-    lateinit var dataManager : DataManager
+    lateinit var dataManager: DataManager
 
     @Inject
-    lateinit var bus : Bus
+    lateinit var bus: RxBus
 
-    val serverName : TextView by bindView(R.id.server_name)
-    val hostName : TextView by bindView(R.id.server_hostname)
-    val location : TextView by bindView(R.id.server_location)
-    val status : TextView by bindView(R.id.server_status)
-    val image : CircleImageView by bindView(R.id.server_image)
+    val serverName: TextView by bindView(R.id.server_name)
+    val hostName: TextView by bindView(R.id.server_hostname)
+    val location: TextView by bindView(R.id.server_location)
+    val status: TextView by bindView(R.id.server_status)
+    val image: CircleImageView by bindView(R.id.server_image)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.graph.inject(this)
-        bus.register(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -60,7 +59,7 @@ class ServerFragment : RxFragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loadDataFromCache();
+        observeServerData(Observable.merge(arrayOf(cacheObservable(), networkObservable())))
         serviceManager.loadServer(123)
     }
 
@@ -74,29 +73,36 @@ class ServerFragment : RxFragment() {
         status.text = context.getString(StatusUtils.getStatus(server.status))
     }
 
-    private fun loadDataFromCache() {
-        dataManager.getServerObservable(arguments.getInt(ARG_SERVER_ID))
-            .take(1)
-            .observeOn(AndroidSchedulers.mainThread())
-            .compose(bindToLifecycle<ServerEntity>())
-            .subscribe(object : Subscriber<ServerEntity>() {
-                override fun onError(e: Throwable) { e.printStackTrace() }
-
-                override fun onCompleted() {}
-
-                override fun onNext(t: ServerEntity) {
-                    setData(t)
+    private fun networkObservable(): Observable<ServerEntity> {
+        return bus.events(LoadServerResponse::class.java)
+                .flatMap {
+                    if (it.ok) {
+                        cacheObservable().take(1)
+                    } else {
+                        Observable.error(it.throwable)
+                    }
                 }
-            })
     }
 
-    @Subscribe
-    fun answerAvailable(response: LoadServerResponse) {
-        loadDataFromCache()
+    private fun cacheObservable(): Observable<ServerEntity> {
+        return dataManager.getServerObservable(arguments.getInt(ARG_SERVER_ID)).take(1)
     }
 
-    override fun onDestroy() {
-        bus.unregister(this)
-        super.onDestroy()
+    private fun observeServerData(observable: Observable<ServerEntity>) {
+        observable.compose(bindToLifecycle<ServerEntity>())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(LoadServerSubscriber())
+    }
+
+    private inner class LoadServerSubscriber : Subscriber<ServerEntity>() {
+        override fun onCompleted() {}
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(s: ServerEntity) {
+            setData(s)
+        }
     }
 }

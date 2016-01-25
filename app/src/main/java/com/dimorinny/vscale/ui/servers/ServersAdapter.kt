@@ -26,19 +26,19 @@ public class ServersAdapter(val context: Context) : RecyclerView.Adapter<Servers
 
     var itemClickListener: OnItemClickListener? = null
 
-    var servers : List<ServerEntity> = ArrayList()
+    var servers: List<ServerEntity> = ArrayList()
         set(s : List<ServerEntity>) {
             field = s
             notifyDataSetChanged()
         }
 
     inner class ViewHolder(var holderView: View) : RecyclerView.ViewHolder(holderView) {
-        val container : ViewGroup by bindView(R.id.server_item_container)
-        val serverName : TextView by bindView(R.id.item_server_name)
-        val hostName : TextView by bindView(R.id.item_server_hostname)
-        val location : TextView by bindView(R.id.item_server_location)
-        val status : TextView by bindView(R.id.item_server_status)
-        val image : CircleImageView by bindView(R.id.item_server_image)
+        val container: ViewGroup by bindView(R.id.server_item_container)
+        val serverName: TextView by bindView(R.id.item_server_name)
+        val hostName: TextView by bindView(R.id.item_server_hostname)
+        val location: TextView by bindView(R.id.item_server_location)
+        val status: TextView by bindView(R.id.item_server_status)
+        val image: CircleImageView by bindView(R.id.item_server_image)
 
         init {
             if (itemClickListener != null) {

@@ -7,9 +7,9 @@ import com.dimorinny.vscale.App
 import com.dimorinny.vscale.db.entity.ServerEntity
 import com.dimorinny.vscale.event.server.LoadServerResponse
 import com.dimorinny.vscale.event.server.LoadServersResponse
+import com.dimorinny.vscale.rx.RxBus
 import com.dimorinny.vscale.usecase.LoadServerUseCase
 import com.dimorinny.vscale.usecase.LoadServersUseCase
-import com.squareup.otto.Bus
 import rx.Subscriber
 import rx.Subscription
 import java.util.*
@@ -21,15 +21,15 @@ import javax.inject.Inject
 class ApiService : Service() {
 
     @Inject
-    lateinit var serversUseCase : LoadServersUseCase
+    lateinit var serversUseCase: LoadServersUseCase
 
     @Inject
-    lateinit var serverUseCase : LoadServerUseCase
+    lateinit var serverUseCase: LoadServerUseCase
 
     @Inject
-    lateinit var bus : Bus
+    lateinit var bus: RxBus
 
-    private var subscriptions : List<Subscription> = ArrayList()
+    private var subscriptions: List<Subscription> = ArrayList()
 
     companion object {
         // Args
@@ -86,7 +86,7 @@ class ApiService : Service() {
         override fun onCompleted() {}
 
         override fun onError(e: Throwable) {
-            e.printStackTrace()
+            bus.post(LoadServersResponse(false, e))
             stopSelf(startId)
         }
 
@@ -100,7 +100,7 @@ class ApiService : Service() {
         override fun onCompleted() {}
 
         override fun onError(e: Throwable) {
-            e.printStackTrace()
+            bus.post(LoadServerResponse(false, e))
             stopSelf(startId)
         }
 

@@ -2,6 +2,7 @@ package com.dimorinny.vscale
 
 import com.dimorinny.vscale.api.ApiModule
 import com.dimorinny.vscale.db.DbModule
+import com.dimorinny.vscale.rx.RxModule
 import com.dimorinny.vscale.service.ApiService
 import com.dimorinny.vscale.service.ServiceModule
 import com.dimorinny.vscale.ui.server.ServerFragment
@@ -20,7 +21,8 @@ import javax.inject.Singleton
         DbModule::class,
         ServiceModule::class,
         UseCaseModule::class,
-        ApiModule::class))
+        ApiModule::class,
+        RxModule::class))
 interface AppComponent {
     fun inject(application: App)
     fun inject(fragment: ServersFragment)

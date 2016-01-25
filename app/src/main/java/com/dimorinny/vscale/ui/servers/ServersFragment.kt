@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +13,12 @@ import com.dimorinny.vscale.db.DataManager
 import com.dimorinny.vscale.db.entity.ServerEntity
 import com.dimorinny.vscale.dependency.bindView
 import com.dimorinny.vscale.event.server.LoadServersResponse
+import com.dimorinny.vscale.rx.RxBus
 import com.dimorinny.vscale.service.ServiceManager
 import com.dimorinny.vscale.ui.server.ServerActivity
 import com.dimorinny.vscale.ui.server.ServerFragment
-import com.squareup.otto.Bus
-import com.squareup.otto.Subscribe
 import com.trello.rxlifecycle.components.support.RxFragment
+import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import javax.inject.Inject
@@ -34,30 +33,28 @@ public class ServersFragment : RxFragment() {
     lateinit var serviceManager: ServiceManager
 
     @Inject
-    lateinit var dataManager : DataManager
+    lateinit var dataManager: DataManager
 
     @Inject
-    lateinit var bus : Bus
+    lateinit var bus: RxBus
 
-    val serversRecyclerView : RecyclerView by bindView(R.id.servers_list)
-    lateinit var serversAdapter : ServersAdapter
+    val serversRecyclerView: RecyclerView by bindView(R.id.servers_list)
+    lateinit var serversAdapter: ServersAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.graph.inject(this)
-        bus.register(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_servers, container, false);
+        return inflater?.inflate(R.layout.fragment_servers, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.v("ServersFragment", "view created")
-        initRecyclerView();
-        loadDataFromCache();
+        initRecyclerView()
+        observeServersData(Observable.merge(arrayOf(cacheObservable(), networkObservable())))
         serviceManager.loadServers()
     }
 
@@ -76,27 +73,25 @@ public class ServersFragment : RxFragment() {
         serversRecyclerView.adapter = serversAdapter
     }
 
-    private fun loadDataFromCache() {
-        dataManager.getServersObservable()
-                .take(1)
-                .observeOn(AndroidSchedulers.mainThread())
-                .compose(bindToLifecycle<List<ServerEntity>>())
-                .subscribe(object : Subscriber<List<ServerEntity>>() {
-                    override fun onError(e: Throwable) { e.printStackTrace() }
-
-                    override fun onCompleted() {}
-
-                    override fun onNext(t: List<ServerEntity>) {
-                        serversAdapter.servers = t
-                    }
-                })
+    private fun cacheObservable(): Observable<List<ServerEntity>> {
+        return dataManager.getServersObservable().take(1)
     }
 
-    // Callbacks
+    private fun networkObservable(): Observable<List<ServerEntity>> {
+        return bus.events(LoadServersResponse::class.java)
+                .flatMap {
+                    if (it.ok) {
+                        cacheObservable().take(1)
+                    } else {
+                        Observable.error(it.throwable)
+                    }
+                }
+    }
 
-    @Subscribe
-    fun answerAvailable(response: LoadServersResponse) {
-        loadDataFromCache()
+    private fun observeServersData(observable: Observable<List<ServerEntity>>) {
+        observable.compose(bindToLifecycle<List<ServerEntity>>())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(LoadServersSubscriber())
     }
 
     private fun startDetailActivity(index: Int) {
@@ -105,8 +100,15 @@ public class ServersFragment : RxFragment() {
         startActivity(intent)
     }
 
-    override fun onDestroy() {
-        bus.unregister(this)
-        super.onDestroy()
+    private inner class LoadServersSubscriber : Subscriber<List<ServerEntity>>() {
+        override fun onCompleted() {}
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(s: List<ServerEntity>) {
+            serversAdapter.servers = s
+        }
     }
 }

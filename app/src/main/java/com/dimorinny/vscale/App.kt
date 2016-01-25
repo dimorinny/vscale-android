@@ -9,7 +9,7 @@ import com.dimorinny.vscale.db.DbModule
 class App : Application() {
 
     companion object {
-        lateinit var graph : AppComponent
+        lateinit var graph: AppComponent
     }
 
     override fun onCreate() {

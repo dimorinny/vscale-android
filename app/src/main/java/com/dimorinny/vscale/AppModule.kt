@@ -1,7 +1,6 @@
 package com.dimorinny.vscale
 
 import android.content.Context
-import com.squareup.otto.Bus
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -11,17 +10,11 @@ import javax.inject.Singleton
  */
 
 @Module
-class AppModule(private val application : App) {
+class AppModule(private val application: App) {
 
     @Provides
     @Singleton
-    fun provideContext() : Context {
+    fun provideContext(): Context {
         return application
-    }
-
-    @Provides
-    @Singleton
-    fun provideBus() : Bus {
-        return Bus()
     }
 }
