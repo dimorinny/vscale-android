@@ -22,6 +22,7 @@
         </activity>
         <activity
             android:name=".ui.server.ServerActivity"
+            android:theme="@style/SlideTheme"
             android:label="@string/title_server"/>
         <service
             android:name=".service.ApiService"

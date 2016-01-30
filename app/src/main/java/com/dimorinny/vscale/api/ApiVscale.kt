@@ -14,7 +14,7 @@ import rx.Observable
 class ApiVscale(private val context: Context) {
 
     companion object {
-        private val BASE_URL = "http://192.168.1.33:8000"
+        private val BASE_URL = "http://192.168.1.35:8000"
     }
 
     private val restAdapter: RestAdapter = initRestAdapter()

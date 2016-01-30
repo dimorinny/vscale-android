@@ -98,6 +98,7 @@ public class ServersFragment : RxFragment() {
         val intent = Intent(activity, ServerActivity::class.java)
         intent.putExtra(ServerFragment.ARG_SERVER_ID, index)
         startActivity(intent)
+        activity.overridePendingTransition(R.anim.activity_in, 0)
     }
 
     private inner class LoadServersSubscriber : Subscriber<List<ServerEntity>>() {
